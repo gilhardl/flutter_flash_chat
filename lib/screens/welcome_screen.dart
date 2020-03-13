@@ -1,3 +1,5 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 
 import 'login_screen.dart';
@@ -21,23 +23,29 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                Hero(
-                  tag: 'logo',
-                  child: Container(
-                    child: Image.asset('images/logo.png'),
-                    height: 60.0,
+            SizedBox(
+              height: 60.0,
+              width: double.infinity,
+              child: Row(
+                children: <Widget>[
+                  HeroLogo(),
+                  TypewriterAnimatedTextKit(
+                    text: [
+                      "Flash Chat",
+                    ],
+                    textStyle: TextStyle(
+                      fontSize: 45.0,
+                      fontWeight: FontWeight.w900,
+                    ),
+                    textAlign: TextAlign.start,
+                    alignment: AlignmentDirectional.topEnd,
+                    isRepeatingAnimation: true,
+                    pause: Duration(microseconds: 0),
+                    totalRepeatCount: 50,
+                    speed: Duration(milliseconds: 200),
                   ),
-                ),
-                Text(
-                  'Flash Chat',
-                  style: TextStyle(
-                    fontSize: 45.0,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
             SizedBox(
               height: 48.0,
@@ -80,6 +88,54 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class HeroLogo extends StatefulWidget {
+  @override
+  _HeroLogoState createState() => _HeroLogoState();
+}
+
+class _HeroLogoState extends State<HeroLogo>
+    with SingleTickerProviderStateMixin {
+  AnimationController controller;
+  Animation animation;
+  double opacity = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 1),
+      lowerBound: 0.0,
+      upperBound: 1.0,
+    );
+
+    animation = CurvedAnimation(parent: controller, curve: Curves.bounceOut);
+
+    animation.addListener(() {
+      setState(() {
+        opacity = animation.value;
+      });
+    });
+
+    controller.forward();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Hero(
+      tag: 'logo',
+      child: Container(
+        child: Opacity(
+          opacity: opacity,
+          child: Image.asset('images/logo.png'),
+        ),
+        height: 30 + (animation.value * 30),
       ),
     );
   }
