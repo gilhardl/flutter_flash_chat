@@ -122,4 +122,10 @@ class _HeroLogoState extends State<HeroLogo>
       ),
     );
   }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 }
