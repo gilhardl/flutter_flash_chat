@@ -42,7 +42,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     alignment: AlignmentDirectional.topEnd,
                     isRepeatingAnimation: true,
                     pause: Duration(microseconds: 0),
-                    totalRepeatCount: 50,
+                    totalRepeatCount: 1000,
                     speed: Duration(milliseconds: 200),
                   ),
                 ],
@@ -106,7 +106,9 @@ class _HeroLogoState extends State<HeroLogo>
       });
     });
 
-    controller.forward();
+    Future.delayed(Duration(seconds: 1)).then((_) {
+      controller.forward();
+    });
   }
 
   @override
