@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 class FlashButton extends StatelessWidget {
   FlashButton({@required this.child, @required this.onPressed, this.color});
 
-  final Color color;
   final Widget child;
   final VoidCallback onPressed;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
