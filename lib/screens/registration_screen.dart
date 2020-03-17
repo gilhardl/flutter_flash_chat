@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/widgets/flash_button.dart';
 import 'package:flash_chat/widgets/flash_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static String routeName = '/registration';
@@ -10,56 +12,83 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  String email = '';
+  String password = '';
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Hero(
-              tag: 'logo',
-              child: Container(
-                height: 200.0,
-                child: Image.asset('images/logo.png'),
+      body: ModalProgressHUD(
+        inAsyncCall: isLoading,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Hero(
+                tag: 'logo',
+                child: Container(
+                  height: 200.0,
+                  child: Image.asset('images/logo.png'),
+                ),
               ),
-            ),
-            SizedBox(
-              height: 48.0,
-            ),
-            FlashTextField(
-              onChanged: (value) {
-                //Do something with the user input.
-              },
-              borderColor: Colors.blueAccent,
-              hint: 'Enter your email',
-            ),
-            SizedBox(
-              height: 8.0,
-            ),
-            FlashTextField(
-              onChanged: (value) {
-                //Do something with the user input.
-              },
-              borderColor: Colors.blueAccent,
-              hint: 'Enter your password',
-            ),
-            SizedBox(
-              height: 24.0,
-            ),
-            FlashButton(
-              child: Text(
-                'Register',
-                style: TextStyle(color: Colors.white),
+              SizedBox(
+                height: 48.0,
               ),
-              onPressed: () {
-                //Implement registration functionality.
-              },
-              color: Colors.blueAccent,
-            ),
-          ],
+              FlashTextField(
+                onChanged: (value) {
+                  email = value;
+                },
+                borderColor: Colors.blueAccent,
+                hint: 'Enter your email',
+                keyboardType: TextInputType.emailAddress,
+              ),
+              SizedBox(
+                height: 8.0,
+              ),
+              FlashTextField(
+                onChanged: (value) {
+                  password = value;
+                },
+                borderColor: Colors.blueAccent,
+                hint: 'Enter your password',
+                obscureText: true,
+              ),
+              SizedBox(
+                height: 24.0,
+              ),
+              FlashButton(
+                child: Text(
+                  'Register',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () async {
+                  setState(() {
+                    isLoading = true;
+                  });
+                  try {
+                    AuthResult result =
+                        await _auth.createUserWithEmailAndPassword(
+                      email: email,
+                      password: password,
+                    );
+                    if (result.user != null) {
+                      Navigator.pushNamed(context, '/chat');
+                    }
+                  } catch (e) {
+                    print(e);
+                  }
+                  setState(() {
+                    isLoading = false;
+                  });
+                },
+                color: Colors.blueAccent,
+              ),
+            ],
+          ),
         ),
       ),
     );

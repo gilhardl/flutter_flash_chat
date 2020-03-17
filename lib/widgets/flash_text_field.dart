@@ -4,17 +4,23 @@ class FlashTextField extends StatelessWidget {
   FlashTextField({
     @required this.onChanged,
     @required this.borderColor,
+    this.keyboardType,
     this.hint = '',
+    this.obscureText = false,
   });
 
   final Function(String) onChanged;
   final String hint;
-  final borderColor;
+  final Color borderColor;
+  final bool obscureText;
+  final TextInputType keyboardType;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       onChanged: onChanged,
+      obscureText: obscureText,
+      keyboardType: keyboardType,
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: TextStyle(color: Colors.grey),

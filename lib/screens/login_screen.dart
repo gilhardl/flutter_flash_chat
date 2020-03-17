@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/widgets/flash_button.dart';
 import 'package:flash_chat/widgets/flash_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class LoginScreen extends StatefulWidget {
   static String routeName = '/login';
@@ -10,55 +12,79 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  String email = '';
+  String password = '';
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Hero(
-              tag: 'logo',
-              child: Container(
-                height: 200.0,
-                child: Image.asset('images/logo.png'),
+      body: ModalProgressHUD(
+        inAsyncCall: isLoading,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Hero(
+                tag: 'logo',
+                child: Container(
+                  height: 200.0,
+                  child: Image.asset('images/logo.png'),
+                ),
               ),
-            ),
-            SizedBox(
-              height: 48.0,
-            ),
-            FlashTextField(
-              onChanged: (value) {
-                //Do something with the user input.
-              },
-              borderColor: Colors.lightBlueAccent,
-              hint: 'Enter your email',
-            ),
-            SizedBox(
-              height: 8.0,
-            ),
-            FlashTextField(
-              onChanged: (value) {
-                //Do something with the user input.
-              },
-              borderColor: Colors.lightBlueAccent,
-              hint: 'Enter your password',
-            ),
-            SizedBox(
-              height: 24.0,
-            ),
-            FlashButton(
-              child: Text(
-                'Log In',
+              SizedBox(
+                height: 48.0,
               ),
-              onPressed: () {
-                //Implement login functionality.
-              },
-              color: Colors.lightBlueAccent,
-            ),
-          ],
+              FlashTextField(
+                onChanged: (value) {
+                  email = value;
+                },
+                borderColor: Colors.lightBlueAccent,
+                hint: 'Enter your email',
+                keyboardType: TextInputType.emailAddress,
+              ),
+              SizedBox(
+                height: 8.0,
+              ),
+              FlashTextField(
+                onChanged: (value) {
+                  password = value;
+                },
+                borderColor: Colors.lightBlueAccent,
+                hint: 'Enter your password',
+                obscureText: true,
+              ),
+              SizedBox(
+                height: 24.0,
+              ),
+              FlashButton(
+                child: Text(
+                  'Log In',
+                ),
+                onPressed: () async {
+                  setState(() {
+                    isLoading = true;
+                  });
+                  try {
+                    AuthResult result = await _auth.signInWithEmailAndPassword(
+                        email: email, password: password);
+                    if (result.user != null) {
+                      Navigator.pushNamed(context, '/chat');
+                    }
+                  } catch (e) {
+                    print(e);
+                  }
+                  setState(() {
+                    isLoading = false;
+                  });
+                },
+                color: Colors.lightBlueAccent,
+              ),
+            ],
+          ),
         ),
       ),
     );
