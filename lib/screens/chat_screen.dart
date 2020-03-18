@@ -1,6 +1,7 @@
 import 'package:flash_chat/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatScreen extends StatefulWidget {
   static String routeName = '/chat';
@@ -11,7 +12,23 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final _auth = FirebaseAuth.instance;
+  final _firestore = Firestore.instance;
   FirebaseUser user;
+  String messageText;
+  final _messageInputCtrl = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+    initMessageInputCtrl();
+  }
+
+  @override
+  void dispose() {
+    _messageInputCtrl.dispose();
+    super.dispose();
+  }
 
   void getCurrentUser() async {
     FirebaseUser currentUser;
@@ -24,6 +41,12 @@ class _ChatScreenState extends State<ChatScreen> {
     } catch (e) {
       print(e);
     }
+  }
+
+  void initMessageInputCtrl() {
+    _messageInputCtrl.addListener(() {
+      messageText = _messageInputCtrl.text;
+    });
   }
 
   @override
@@ -54,15 +77,17 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
-                      onChanged: (value) {
-                        //Do something with the user input.
-                      },
+                      controller: _messageInputCtrl,
                       decoration: kMessageTextFieldDecoration,
                     ),
                   ),
                   FlatButton(
-                    onPressed: () {
-                      //Implement send functionality.
+                    onPressed: () async {
+                      await _firestore.collection('messages').add({
+                        'text': messageText,
+                        'sender': user.email,
+                      });
+                      _messageInputCtrl.clear();
                     },
                     child: Text(
                       'Send',
