@@ -68,7 +68,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   StreamBuilder<QuerySnapshot> _buildMessagesList() {
     return StreamBuilder<QuerySnapshot>(
-      stream: _firestore.collection('messages').snapshots(),
+      stream:
+          _firestore.collection('messages').orderBy('createdAt').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Expanded(
@@ -83,11 +84,10 @@ class _ChatScreenState extends State<ChatScreen> {
             padding: EdgeInsets.symmetric(horizontal: 8.0),
             child: ListView(
               reverse: true,
-              children: snapshot.data.documents.map(
+              children: snapshot.data.documents.reversed.map(
                 (messageDocSnapshot) {
                   final sender = messageDocSnapshot.data['sender'];
                   final message = messageDocSnapshot.data['text'];
-                  print('$sender: $message');
                   return FlashMessageBubble(
                     sender: sender ?? '',
                     message: message ?? '',
