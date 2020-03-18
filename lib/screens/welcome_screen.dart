@@ -1,4 +1,5 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/widgets/flash_button.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,23 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+  final _auth = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    checkLoggedInUser();
+  }
+
+  void checkLoggedInUser() async {
+    try {
+      final FirebaseUser user = await _auth.currentUser();
+      if (user != null) {
+        Navigator.pushNamed(context, '/chat');
+      }
+    } catch (e) {}
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
