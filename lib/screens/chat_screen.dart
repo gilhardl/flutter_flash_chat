@@ -83,15 +83,18 @@ class _ChatScreenState extends State<ChatScreen> {
             padding: EdgeInsets.symmetric(horizontal: 8.0),
             child: ListView(
               reverse: true,
-              children: snapshot.data.documents
-                  .map(
-                    (messageDocSnapshot) => FlashMessageBubble(
-                      sender: messageDocSnapshot.data['sender'],
-                      message: messageDocSnapshot.data['text'],
-                      currentUser: user?.email,
-                    ),
-                  )
-                  .toList(),
+              children: snapshot.data.documents.map(
+                (messageDocSnapshot) {
+                  final sender = messageDocSnapshot.data['sender'];
+                  final message = messageDocSnapshot.data['text'];
+                  print('$sender: $message');
+                  return FlashMessageBubble(
+                    sender: sender ?? '',
+                    message: message ?? '',
+                    isCurrentUser: user?.email == sender,
+                  );
+                },
+              ).toList(),
             ),
           ),
         );

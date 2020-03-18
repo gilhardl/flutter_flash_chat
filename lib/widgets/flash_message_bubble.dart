@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class FlashMessageBubble extends StatelessWidget {
-  FlashMessageBubble(
-      {@required this.sender,
-      @required this.message,
-      @required String currentUser})
-      : _user = currentUser;
+  FlashMessageBubble({
+    @required this.sender,
+    @required this.message,
+    this.isCurrentUser = false,
+  });
 
   final String sender;
   final String message;
-  final String _user;
+  final bool isCurrentUser;
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +17,10 @@ class FlashMessageBubble extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
         crossAxisAlignment:
-            _user == sender ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
           Material(
-            color: _user == sender
+            color: isCurrentUser
                 ? Theme.of(context).accentColor
                 : Theme.of(context).brightness == Brightness.dark
                     ? Colors.grey[600]
