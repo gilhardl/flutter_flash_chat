@@ -59,6 +59,7 @@ class _FlashMessageInputState extends State<FlashMessageInput> {
               await _firestore.collection('messages').add({
                 'text': messageText,
                 'sender': widget._user,
+                'createdAt': FieldValue.serverTimestamp()
               });
               _messageInputCtrl.clear();
             },
