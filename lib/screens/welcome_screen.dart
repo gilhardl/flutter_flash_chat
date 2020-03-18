@@ -75,7 +75,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               onPressed: () {
                 Navigator.pushNamed(context, LoginScreen.routeName);
               },
-              color: Colors.lightBlueAccent,
+              color: Theme.of(context).accentColor,
             ),
             FlashButton(
               child: Text(
@@ -84,7 +84,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               onPressed: () {
                 Navigator.pushNamed(context, RegistrationScreen.routeName);
               },
-              color: Colors.blueAccent,
+              color: Theme.of(context).primaryColor,
             ),
           ],
         ),

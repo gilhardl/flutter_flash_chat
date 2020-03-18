@@ -22,68 +22,73 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: ModalProgressHUD(
         inAsyncCall: isLoading,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Hero(
-                tag: 'logo',
-                child: Container(
-                  height: 200.0,
-                  child: Image.asset('images/logo.png'),
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Flexible(
+                  child: Hero(
+                    tag: 'logo',
+                    child: Container(
+                      height: 200.0,
+                      child: Image.asset('images/logo.png'),
+                    ),
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 48.0,
-              ),
-              FlashTextField(
-                onChanged: (value) {
-                  email = value;
-                },
-                borderColor: Colors.lightBlueAccent,
-                hint: 'Enter your email',
-                keyboardType: TextInputType.emailAddress,
-              ),
-              SizedBox(
-                height: 8.0,
-              ),
-              FlashTextField(
-                onChanged: (value) {
-                  password = value;
-                },
-                borderColor: Colors.lightBlueAccent,
-                hint: 'Enter your password',
-                obscureText: true,
-              ),
-              SizedBox(
-                height: 24.0,
-              ),
-              FlashButton(
-                child: Text(
-                  'Log In',
+                SizedBox(
+                  height: 48.0,
                 ),
-                onPressed: () async {
-                  setState(() {
-                    isLoading = true;
-                  });
-                  try {
-                    AuthResult result = await _auth.signInWithEmailAndPassword(
-                        email: email, password: password);
-                    if (result.user != null) {
-                      Navigator.pushNamed(context, '/chat');
+                FlashTextField(
+                  onChanged: (value) {
+                    email = value;
+                  },
+                  borderColor: Theme.of(context).accentColor,
+                  hint: 'Enter your email',
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                SizedBox(
+                  height: 8.0,
+                ),
+                FlashTextField(
+                  onChanged: (value) {
+                    password = value;
+                  },
+                  borderColor: Theme.of(context).accentColor,
+                  hint: 'Enter your password',
+                  obscureText: true,
+                ),
+                SizedBox(
+                  height: 24.0,
+                ),
+                FlashButton(
+                  child: Text(
+                    'Log In',
+                  ),
+                  onPressed: () async {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    try {
+                      AuthResult result =
+                          await _auth.signInWithEmailAndPassword(
+                              email: email, password: password);
+                      if (result.user != null) {
+                        Navigator.pushNamed(context, '/chat');
+                      }
+                    } catch (e) {
+                      print(e);
                     }
-                  } catch (e) {
-                    print(e);
-                  }
-                  setState(() {
-                    isLoading = false;
-                  });
-                },
-                color: Colors.lightBlueAccent,
-              ),
-            ],
+                    setState(() {
+                      isLoading = false;
+                    });
+                  },
+                  color: Theme.of(context).accentColor,
+                ),
+              ],
+            ),
           ),
         ),
       ),
